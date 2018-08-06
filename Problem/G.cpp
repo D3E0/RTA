@@ -1,87 +1,68 @@
 //============================================================================
-//Name：杭电多校第四场 J. Let Sudoku Rotate 深搜
+//Name：杭电多校第三场 J Heritage of Skywalkert 暴力
 //============================================================================
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+
+#define IO ios_base::sync_with_stdio(0),cin.tie(0)
+#define rep(i, a, n) for (int i = a; i < n; i++)
+#define mm(arr, val) memset(arr, val, sizeof(arr))
 
 using namespace std;
-//十六进制 转 十进制
-int ord(char c) {
-    if (isdigit(c)) return c - '0';
-    return c - 'A' + 10;
-}
-
-char str(int c) {
-    if (c < 10) return c + '0';
-    return c + 'A' - 10;
-}
-
-int r[16][16], c[16][16];
-int a[16][16];
-int b[4][4];
-char s[16];
-int ret;
-
-// 该区域 行 列数字出现情况
-void add(int ip, int jp, int v) {
-    for (int i = ip * 4; i < (ip + 1) * 4; ++i) {
-        for (int j = jp * 4; j < (jp + 1) * 4; ++j) {
-            r[i][a[i][j]] += v;
-            c[j][a[i][j]] += v;
-        }
-    }
-}
-
-//旋转
-bool rot(int ip, int jp) {
-    for (int i = ip * 4; i < (ip + 1) * 4; ++i) {
-        for (int j = jp * 4; j < (jp + 1) * 4; ++j) {
-            --r[i][a[i][j]];
-            --c[j][a[i][j]];
-            b[j - jp * 4][(ip + 1) * 4 - i - 1] = a[i][j];
-        }
-    }
-    bool succ = true;
-    for (int i = ip * 4; i < (ip + 1) * 4; ++i) {
-        for (int j = jp * 4; j < (jp + 1) * 4; ++j) {
-            a[i][j] = b[i - ip * 4][j - jp * 4];
-            if ((++r[i][a[i][j]] > 1) || (++c[j][a[i][j]] > 1))
-                succ = false;
-        }
-    }
-    return succ;
-}
-
-void dfs(int ip, int jp, int now) {
-//    边界
-    if (ip == 4 && jp == 0) {
-        ret = min(ret, now);
-        return;
-    }
-    add(ip, jp, 1);
-    if (now >= ret) return;
-    for (int i = 1; i <= 4; ++i) {
-        if (rot(ip, jp))
-//            从左到右，从上到下
-            dfs(jp == 3 ? ip + 1 : ip, jp == 3 ? 0 : jp + 1, now + (i & 3));
-    }
-    add(ip, jp, -1);
-}
-
-void solve() {
-    for (int i = 0; i < 16; ++i) {
-        scanf("%s", s);
-        for (int j = 0; j < 16; ++j) a[i][j] = ord(s[j]);
-    }
-    memset(r, 0, sizeof(r));
-    memset(c, 0, sizeof(c));
-    ret = 16 * 4;
-    dfs(0, 0, 0);
-    printf("%d\n", ret);
-}
+typedef long long LL;
 
 int main() {
+#ifdef ONLINE_JUDGE
+#else
+    freopen(R"(C:\Users\91417\CLionProjects\RTA\Problem\in)", "r", stdin);
+    freopen(R"(C:\Users\91417\CLionProjects\RTA\Problem\out)", "w", stdout);
+#endif
     int T;
-    scanf("%d", &T);
-    while (T--) solve();
+    cin >> T;
+    while (T--) {
+        int k, a[15], b[15], c[15], vis[15];
+        int MAX = INT_MIN, MIN = INT_MAX;
+        string str;
+        cin >> str >> k;
+        int n = str.length();
+        rep(i, 0, n) {
+            a[i] = str[i] - '0';
+        }
+
+        rep(i, 0, n) {
+            b[i] = i;
+        }
+        do {
+            mm(vis, 0);
+            if (!a[b[0]]) continue;
+            rep(i, 0, n) {
+                c[i] = i;
+            }
+            int cnt = 0;
+            rep(i, 0, n) {
+                if (!vis[i]) {
+                    vis[i] = 1;
+                    int j = c[i];
+                    while (i != c[j]) {
+                        j = c[j];
+                        vis[j] = 1;
+                    }
+                    cnt++;
+                }
+            }
+            cnt = n - cnt;
+            if (cnt <= k) {
+                int tmp = 0;
+                rep(i, 0, n) {
+                    tmp = tmp * 10 + a[b[i]];
+                }
+                MAX = max(tmp, MAX);
+                MIN = min(tmp, MIN);
+            }
+        } while (next_permutation(b, b + n));
+//        全排列数位对应关系  不能全排列数值，数值会重复
+
+        printf("%d %d\n", MIN, MAX);
+
+    }
     return 0;
 }
