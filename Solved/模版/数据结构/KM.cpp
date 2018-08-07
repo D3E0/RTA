@@ -1,5 +1,7 @@
 //============================================================================
-//Name：牛客多校第五场 E Room 带权二分图最佳匹配 KM
+//Name：KM 带权二分图最佳匹配
+//https://blog.csdn.net/hello_sheep/article/details/77150497?locationNum=6&fps=1
+//https://blog.csdn.net/sixdaycoder/article/details/47720471
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -9,16 +11,16 @@
 
 using namespace std;
 
-const int N = 205;
+const int N = 105;
 const int MAX = INT_MAX;
 const int MIN = INT_MIN;
-int n, minz, arr[N][N];
+int n, m, minz, arr[N][N];
 int cy[N], wx[N], wy[N];
 bool visx[N], visy[N];
 
 bool dfs(int s) {
     visx[s] = true;
-    rep(i, 1, n + 1) {
+    rep(i, 1, m + 1) {
         if (!visy[i]) {
             int t = wx[s] + wy[i] - arr[s][i];
             if (!t) {
@@ -31,25 +33,28 @@ bool dfs(int s) {
                 minz = t;
             }
         }
+        return false;
     }
-    return false;
 }
 
 int km() {
     mm(cy, 0), mm(wy, 0);
     rep(i, 1, n + 1) {
-        while (true) {
+        while (1) {
             minz = MAX;
             mm(visx, 0), mm(visy, 0);
             if (dfs(i))break;
             rep(j, 1, n + 1) {
                 if (visx[j]) wx[j] -= minz;
+            }
+            rep(j, 1, m + 1) {
                 if (visy[j]) wy[j] += minz;
             }
         }
     }
+
     int ans = 0;
-    rep(i, 1, n + 1) ans += arr[cy[i]][i];
+    rep(i, 1, m + 1) ans += arr[cy[i]][i];
     return ans;
 }
 
@@ -59,30 +64,18 @@ int main() {
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
-    int a[N][5], b[N][5];
-    cin >> n;
+    cin >> n >> m;
 
-    rep(i, 0, n) {
-        rep(j, 0, 4) cin >> a[i][j];
-    }
-    rep(i, 0, n) {
-        rep(j, 0, 4) cin >> b[i][j];
-    }
-    mm(wx, 0);
-    rep(i, 0, n) {
-        rep(j, 0, n) {
-            int cnt = 0;
-            rep(k, 0, 4) {
-                rep(p, 0, 4) {
-                    if (a[i][k] == b[j][p]) cnt++;
-                }
-            }
-            arr[i + 1][j + 1] = cnt;
-            wx[i + 1] = max(wx[i + 1], cnt);
+    rep(i, 1, n + 1) {
+        wx[i] = MIN;
+        rep(j, 1, m + 1) {
+            cin >> arr[i][j];
+            wx[i] = max(wx[i], arr[i][j]);
         }
     }
 
-    cout << 4 * n - km() << endl;
+    cout << km() << endl;
+
     return 0;
 }
 

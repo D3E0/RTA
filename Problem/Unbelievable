@@ -13,7 +13,7 @@
 
 // repeat rep(i, 0, n)
 #define rep(i, a, n) for (int i = a; i < n; i++)
-#define per(i, a, n) for (int i = n-1; i >= a; i--)
+#define per(i, a, n) for (int i = a; i >= n; i--)
 
 // memset(a, 0, sizeof(a))
 #define mm(arr, val) memset(arr, val, sizeof(arr))

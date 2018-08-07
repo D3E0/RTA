@@ -45,6 +45,7 @@ void km() {
     for (int i = 1; i <= n; i++) {
         printf("%d start: \n", i);
         while (1) {
+            printf("loop: \n");
             minz = MAX;
             memset(visx, 0, sizeof visx);
             memset(visy, 0, sizeof visy);
@@ -62,6 +63,7 @@ void km() {
                 printf("wx[%d] = %d  wy[%d] = %d\n", j, wx[j], j, wy[j]);
             }
         }
+        printf("%d end\n", i);
     }
 
     ans = 0;
@@ -70,7 +72,6 @@ void km() {
 }
 
 int main() {
-    IO;
 #ifdef ONLINE_JUDGE
 #else
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);

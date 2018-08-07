@@ -1,5 +1,5 @@
 //============================================================================
-//Name：杭电多校第三场 J Heritage of Skywalkert 暴力
+//Name：杭电多校第五场 1002 Beautiful Now 交换次数 全排列枚举
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -13,8 +13,8 @@ typedef long long LL;
 int main() {
 #ifdef ONLINE_JUDGE
 #else
-    freopen(R"(C:\Users\91417\CLionProjects\RTA\Problem\in)", "r", stdin);
-    freopen(R"(C:\Users\91417\CLionProjects\RTA\Problem\out)", "w", stdout);
+    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
+    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
     int T;
     cin >> T;
@@ -27,34 +27,49 @@ int main() {
         rep(i, 0, n) {
             a[i] = str[i] - '0';
         }
+//      变成有序最多交换 n-1 次
+        if (k >= n - 1) {
+            sort(a, a + n);
+            int tmp = 0;
+            for (int i = n - 1; i >= 0; i--) tmp = tmp * 10 + a[i];
+            MAX = tmp;
+            rep(i, 0, n) {
+                if (a[i]) {
+                    tmp = i;
+                    break;
+                }
+            }
+            for (int i = tmp - 1; i >= 0; i--) swap(a[i], a[i + 1]);
+            rep(i, 0, n) printf("%d", a[i]);
+            printf(" %d\n", MAX);
+            continue;
+        }
 
+//      c[j] --> j 这个数对应的位置
         rep(i, 0, n) {
             b[i] = i;
+            c[i] = i;
         }
+
         do {
             mm(vis, 0);
             if (!a[b[0]]) continue;
-            rep(i, 0, n) {
-                c[i] = i;
-            }
+//          从 b 经过几步交换变成 c
             int cnt = 0;
             rep(i, 0, n) {
                 if (!vis[i]) {
-                    vis[i] = 1;
-                    int j = c[i];
+                    int j = b[i];
                     while (i != c[j]) {
-                        j = c[j];
-                        vis[j] = 1;
+                        vis[c[j]] = 1;
+                        j = b[c[j]];
                     }
                     cnt++;
                 }
             }
-            cnt = n - cnt;
-            if (cnt <= k) {
+//         n - cnt 即交换次数
+            if (n - cnt <= k) {
                 int tmp = 0;
-                rep(i, 0, n) {
-                    tmp = tmp * 10 + a[b[i]];
-                }
+                rep(i, 0, n) tmp = tmp * 10 + a[b[i]];
                 MAX = max(tmp, MAX);
                 MIN = min(tmp, MIN);
             }

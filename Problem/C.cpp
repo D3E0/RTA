@@ -1,5 +1,5 @@
 //============================================================================
-//Name：杭电多校第三场 J Heritage of Skywalkert 暴力
+//Name：KM 带权二分图最佳匹配
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -8,10 +8,57 @@
 #define mm(arr, val) memset(arr, val, sizeof(arr))
 
 using namespace std;
-typedef long long LL;
 
-bool cmp(LL a, LL b) {
-    return a > b;
+const int N = 105;
+const int MAX = INT_MAX;
+const int MIN = INT_MIN;
+int n, m, minz, ans, arr[N][N];
+int cx[N], cy[N], wx[N], wy[N];
+bool visx[N], visy[N];
+
+//匈牙利算法找增广路径
+bool dfs(int s) {
+    visx[s] = true;
+    for (int i = 1; i <= m; i++)
+        if (!visy[i]) {
+            int t = wx[s] + wy[i] - arr[s][i];
+//          相等子图中寻找增广路
+            if (t == 0) {
+                visy[i] = true;
+                if (cy[i] == 0 || dfs(cy[i])) {
+                    cx[s] = i, cy[i] = s;
+                    return true;
+                }
+            } else if (t > 0 && t < minz) {
+                minz = t;
+            }
+        }
+    return false;
+}
+
+void km() {
+    memset(cx, 0, sizeof(cx));
+    memset(cy, 0, sizeof(cy));
+    memset(wy, 0, sizeof(wy));
+    for (int i = 1; i <= n; i++) {
+        while (1) {
+            minz = MAX;
+            memset(visx, 0, sizeof visx);
+            memset(visy, 0, sizeof visy);
+            if (dfs(i))break;
+
+            //将增广轨中 X 部的点的顶标减去 minz
+            for (int j = 1; j <= n; j++)
+                if (visx[j]) wx[j] -= minz;
+            //将增广轨中 Y 部的点的顶标加上 minz
+            for (int j = 1; j <= m; j++)
+                if (visy[j]) wy[j] += minz;
+        }
+    }
+
+    ans = 0;
+    for (int i = 1; i <= m; i++)
+        if (cy[i]) ans += arr[cy[i]][i];
 }
 
 int main() {
@@ -20,93 +67,20 @@ int main() {
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
-    LL T;
-    cin >> T;
-    while (T--) {
-        LL x, k, a[100], b[100], c[100];
-        mm(a, 0), mm(b, 0), mm(c, 0);
-        cin >> x >> k;
-        stack<LL> s;
-        set<LL> res;
-        res.insert(x);
-        while (x) {
-            s.push(x % 10);
-            x /= 10;
-        }
-        LL n = 0;
-        while (!s.empty()) {
-            LL x = s.top();
-            s.pop();
-            a[n] = b[n] = c[n] = x;
-            n++;
-        }
+    cin >> n >> m;
 
-        sort(a, a + n, cmp);
-        LL ans = 0, flag = 0;
-
-        rep(i, 0, n) {
-            if (b[i] != a[i]) {
-                for (LL j = n - 1; j >= 0; j--) {
-                    if (b[j] == a[i]) {
-                        swap(b[j], b[i]);
-                        LL tmp = 0;
-                        rep(p, 0, n) {
-                            tmp = tmp * 10 + b[p];
-                        }
-                        res.insert(tmp);
-                        if (++ans == k) {
-                            flag = 1;
-                        }
-                        break;
-                    }
-                }
-            }
-            if (flag) break;
+    rep(i, 1, n + 1) {
+        wx[i] = MIN;
+        rep(j, 1, m + 1) {
+            cin >> arr[i][j];
+            wx[i] = max(wx[i], arr[i][j]);
         }
-
-        sort(a, a + n);
-        rep(i, 0, n) {
-            if (a[i]) {
-                flag = i;
-                break;
-            }
-        }
-        for (LL i = flag - 1; i >= 0; i--) {
-            swap(a[i], a[i + 1]);
-        }
-        LL ans2 = 0;
-        flag = 0;
-
-        rep(i, 0, n) {
-            if (c[i] != a[i]) {
-                for (LL j = n - 1; j >= 0; j--) {
-                    if (c[j] == a[i]) {
-                        swap(c[j], c[i]);
-                        LL tmp = 0;
-                        rep(p, 0, n) {
-                            tmp = tmp * 10 + c[p];
-                        }
-                        res.insert(tmp);
-                        if (++ans2 == k) {
-                            flag = 1;
-                        }
-                        break;
-                    }
-                }
-            }
-            if (flag) break;
-        }
-
-//        rep(i, 0, n) {
-//            cout << c[i];
-//        }
-//        cout << " ";
-//        rep(i, 0, n) {
-//            cout << b[i];
-//        }
-//        cout << endl;
-
-        cout << *res.begin() << " " << *(--res.end()) << endl;
     }
+
+    km();
+
+    cout << ans << endl;
+
     return 0;
 }
+

@@ -1,7 +1,5 @@
 //============================================================================
 //Name：杭电多校第五场 1002 Beautiful Now 交换次数 全排列枚举
-//https://blog.csdn.net/qq_41037114/article/details/81460996
-//https://blog.csdn.net/codeTZ/article/details/51152407
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -19,14 +17,17 @@ int main() {
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
     int T;
-    scanf("%d", &T);
+    cin >> T;
     while (T--) {
-        int k, a[15], b[15], c[15];
+        int k, a[15], b[15], c[15], vis[15];
         int MAX = INT_MIN, MIN = INT_MAX;
-        char str[100];
-        scanf("%s %d", str, &k);
-        int n = strlen(str);
-        rep(i, 0, n) a[i] = str[i] - '0';
+        string str;
+        cin >> str >> k;
+        int n = str.length();
+        rep(i, 0, n) {
+            a[i] = str[i] - '0';
+        }
+//      变成有序最多交换 n-1 次
         if (k >= n - 1) {
             sort(a, a + n);
             int tmp = 0;
@@ -43,23 +44,30 @@ int main() {
             printf(" %d\n", MAX);
             continue;
         }
-        rep(i, 0, n) b[i] = i;
+
+//      c[j] --> j 这个数对应的位置
+        rep(i, 0, n) {
+            b[i] = i;
+            c[i] = i;
+        }
+
         do {
+            mm(vis, 0);
             if (!a[b[0]]) continue;
-            rep(i, 0, n) c[i] = i;
+//          通过计算循环节个数，得到从 b --> c 的步数
             int cnt = 0;
             rep(i, 0, n) {
-                if (c[i] != b[i]) {
-                    for (int j = n - 1; j > i; j--) {
-                        if (c[j] == b[i]) {
-                            swap(c[j], c[i]);
-                            cnt++;
-                            break;
-                        }
+                if (!vis[i]) {
+                    int j = b[i];
+                    while (i != c[j]) {
+                        vis[c[j]] = 1;
+                        j = b[c[j]];
                     }
+                    cnt++;
                 }
             }
-            if (cnt <= k) {
+//         n - cnt 即交换次数
+            if (n - cnt <= k) {
                 int tmp = 0;
                 rep(i, 0, n) tmp = tmp * 10 + a[b[i]];
                 MAX = max(tmp, MAX);
