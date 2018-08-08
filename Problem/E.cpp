@@ -1,5 +1,5 @@
 //============================================================================
-//Name：杭电多校第三场 1005 Everything Has Changed 弧度 数学
+//Name：杭电多校第六场 1009 Werewolf 并查集 推理
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -9,15 +9,17 @@
 
 using namespace std;
 typedef long long LL;
-//acos(-1.0) = pi
-const double PI = acos(-1.0);
+const int N = static_cast<const int>(1e5 + 10);
 
-//acos 参数范围 (-1.0, 1.0)
-double norm(double x) {
-    return min(max(x, -1.0), 1.0);
+int n, mynext[N], flag[N], vis[N], par[N], wolf[N];
+
+int find(int x) {
+    if (wolf[x] || par[x] == x) return x;
+    return par[x] = find(par[x]);
 }
 
 int main() {
+    IO;
 #ifdef ONLINE_JUDGE
 #else
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
@@ -26,24 +28,43 @@ int main() {
     int t;
     cin >> t;
     while (t--) {
-        int m, R;
-        cin >> m >> R;
-        int x, y, r;
-//      一个完整的圆的弧度是 2*pi
-        double ans = 0, rem = 2 * PI;
-        rep(i, 0, m) {
-            cin >> x >> y >> r;
-            int dis = x * x + y * y;
-            if (dis > (R + r) * (R + r) || dis < (R - r) * (R - r)) continue;
-            double sdis = sqrt(dis);
-            double ang_1 = acos(norm((R * R + dis - r * r) / (2 * sdis * R)));
-            double ang_2 = acos(norm((r * r + dis - R * R) / (2 * sdis * r)));
-            ans += ang_2 * 2 * r;
-            rem -= ang_1 * 2;
+        cin >> n;
+        string str;
+        mm(flag, 0), mm(wolf, 0), mm(par, 0);
+        vis[0] = 1;
+        rep(i, 1, n + 1) {
+            cin >> mynext[i] >> str;
+            par[i] = i;
+            if (str == "werewolf") flag[i] = 1;
         }
-//      弧长 L = r * ang
-        ans += rem * R;
-        printf("%.10lf\n", ans);
+        rep(i, 1, n + 1) {
+//            狼边开始
+            if (flag[i]) {
+                int j = mynext[i];
+                set<int> si;
+                int size = 0;
+                si.insert(j);
+//                找民边
+                while (!flag[j] && size != si.size()) {
+                    size = int(si.size());
+                    j = mynext[j];
+                    si.insert(j);
+                }
+                if (j == i) wolf[mynext[i]] = 1;
+            }
+        }
+
+        rep(i, 1, n + 1) {
+            if (!flag[i]) par[i] = find(mynext[i]);
+        }
+
+        int ans = 0;
+        rep(i, 1, n + 1) {
+            if (wolf[find(i)]) ans++;
+        }
+
+        cout << 0 << " " << ans << endl;
+
     }
     return 0;
 }

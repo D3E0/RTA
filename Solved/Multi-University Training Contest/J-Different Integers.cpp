@@ -46,7 +46,7 @@ int sum(int x) {
 
 //void display(int n) {
 //	for(int i = 1; i <= 2 * n; i++) {
-//		printf("i = %d a[i] = %d next[i] = %d fir[i] = %d sum = %d\n", i, a[i], next[i], fir[i], sum(i));
+//		printf("i = %d a[i] = %d mynext[i] = %d fir[i] = %d sum = %d\n", i, a[i], mynext[i], fir[i], sum(i));
 //	}
 //}
 
@@ -85,7 +85,7 @@ int main() {
         }
 
 //		for(int i = 1; i <= 2 * n; i++) {
-//			printf("i = %d a[i] = %d next[i] = %d fir[i] = %d sum = %d\n", i, a[i], next[i], fir[i], sum(i));
+//			printf("i = %d a[i] = %d mynext[i] = %d fir[i] = %d sum = %d\n", i, a[i], mynext[i], fir[i], sum(i));
 //		}
 
 

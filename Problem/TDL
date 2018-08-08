@@ -6,7 +6,7 @@
 
 LIS
 
-KMP 求最小循环节 (len-next[len])
+KMP 求最小循环节 (len-mynext[len])
 
 线段树
 
@@ -40,11 +40,7 @@ TODO
 流水线调度问题，Johnson法则
 
 
-5 5
-7 8 6 4 2
-3 10 8 9 7
-14 15 12 13 12
-19 18 16 20 10
-23 20 19 25 15
-
+牛客第六场 Generation I
+牛客第五场 take
+牛客第四场 A. Ternary String
 

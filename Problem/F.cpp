@@ -1,75 +1,102 @@
-//============================================================================
-//Name：杭电多校第五场 1002 Beautiful Now 交换次数 全排列枚举
-//https://blog.csdn.net/qq_41037114/article/details/81460996
-//https://blog.csdn.net/codeTZ/article/details/51152407
-//============================================================================
 #include<bits/stdc++.h>
-
-#define IO ios_base::sync_with_stdio(0),cin.tie(0)
-#define rep(i, a, n) for (int i = a; i < n; i++)
-#define mm(arr, val) memset(arr, val, sizeof(arr))
 
 using namespace std;
 typedef long long LL;
+const int INF = 0x3f3f3f3f;
+const int MAXN = 100005;
+int w[MAXN];
+int v[MAXN];
+int par[MAXN];
+int Rank[MAXN];
+bool a[MAXN];
+
+void init(int n) {
+    for (int i = 1; i <= n; ++i) {
+        par[i] = i;
+        Rank[i] = 0;
+    }
+}
+
+int find(int x) {
+    if (par[x] == x || a[x]) {
+        return x;
+    } else {
+        return par[x] = find(par[x]);
+    }
+}
+
+void unite(int x, int y) {
+    x = find(x);
+    y = find(y);
+    if (x == y)return;
+    if (Rank[x] < Rank[y]) {
+        par[x] = y;
+    } else {
+        par[y] = x;
+        if (Rank[x] == Rank[y])Rank[x]++;
+    }
+}
+
+bool same(int x, int y) {
+    return find(x) == find(y);
+}
 
 int main() {
 #ifdef ONLINE_JUDGE
 #else
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
-    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
+//    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
-    int T;
-    scanf("%d", &T);
-    while (T--) {
-        int k, a[15], b[15], c[15];
-        int MAX = INT_MIN, MIN = INT_MAX;
-        char str[100];
-        scanf("%s %d", str, &k);
-        int n = strlen(str);
-        rep(i, 0, n) a[i] = str[i] - '0';
-        if (k >= n - 1) {
-            sort(a, a + n);
-            int tmp = 0;
-            for (int i = n - 1; i >= 0; i--) tmp = tmp * 10 + a[i];
-            MAX = tmp;
-            rep(i, 0, n) {
-                if (a[i]) {
-                    tmp = i;
-                    break;
-                }
+    ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    int t;
+    cin >> t;
+    while (t--) {
+        memset(a, 0, sizeof(a));
+        memset(w, 0, sizeof(w));
+        memset(v, 0, sizeof(v));
+        char s[15];
+        int n;
+        cin >> n;
+        init(n);
+        for (int i = 1; i < n + 1; i++) {
+            int pos;
+            cin >> pos >> s;
+            if (s[0] == 'w') {
+                w[i] = pos;
+            } else {
+                v[i] = pos;
             }
-            for (int i = tmp - 1; i >= 0; i--) swap(a[i], a[i + 1]);
-            rep(i, 0, n) printf("%d", a[i]);
-            printf(" %d\n", MAX);
-            continue;
         }
-        rep(i, 0, n) b[i] = i;
-        do {
-            if (!a[b[0]]) continue;
-            rep(i, 0, n) c[i] = i;
-            int cnt = 0;
-            rep(i, 0, n) {
-                if (c[i] != b[i]) {
-                    for (int j = n - 1; j > i; j--) {
-                        if (c[j] == b[i]) {
-                            swap(c[j], c[i]);
-                            cnt++;
-                            break;
-                        }
-                    }
+        cout << "wolf  ";
+        for (int i = 1; i < n + 1; i++) {
+            if (w[i] != 0) {
+                int temp = w[i];
+                set<int> si;
+                int size = 0;
+                si.insert(w[i]);
+                while (v[temp] != 0 && size != si.size()) {
+                    size = int(si.size());
+                    temp = v[temp];
+                    si.insert(temp);
+                }
+                if (temp == i) {
+                    a[w[i]] = true;
+                    cout << w[i] << " ";
                 }
             }
-            if (cnt <= k) {
-                int tmp = 0;
-                rep(i, 0, n) tmp = tmp * 10 + a[b[i]];
-                MAX = max(tmp, MAX);
-                MIN = min(tmp, MIN);
+        }
+        cout << endl;
+        for (int i = 1; i < n + 1; i++) {
+            if (v[i]) {
+                par[i] = find(v[i]);
             }
-        } while (next_permutation(b, b + n));
-//        全排列数位对应关系  不能全排列数值，数值会重复
-
-        printf("%d %d\n", MIN, MAX);
-
+        }
+        int sum = 0;
+        for (int i = 1; i <= n; ++i) {
+            sum += a[find(i)];
+        }
+        cout << "0 " << sum << endl;
     }
     return 0;
 }

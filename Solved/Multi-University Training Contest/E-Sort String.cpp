@@ -1,5 +1,5 @@
 //============================================================================
-//Name：牛客多校第三场 E Sort String KMP 求最小循环节 (len-next[len])
+//Name：牛客多校第三场 E Sort String KMP 求最小循环节 (len-mynext[len])
 //https://www.nowcoder.com/acm/contest/141/E
 //============================================================================
 #include<bits/stdc++.h>

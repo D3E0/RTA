@@ -1,5 +1,5 @@
 //============================================================================
-//Name：牛客多校第五场 E Room 带权二分图最佳匹配 KM
+//Name：杭电多校第六场 1001 oval-and-rectangle 积分
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -9,49 +9,9 @@
 
 using namespace std;
 
+typedef long long LL;
 const int N = 205;
-const int MAX = INT_MAX;
-const int MIN = INT_MIN;
-int n, minz, arr[N][N];
-int cy[N], wx[N], wy[N];
-bool visx[N], visy[N];
-
-bool dfs(int s) {
-    visx[s] = true;
-    rep(i, 1, n + 1) {
-        if (!visy[i]) {
-            int t = wx[s] + wy[i] - arr[s][i];
-            if (!t) {
-                visy[i] = true;
-                if (!cy[i] || dfs(cy[i])) {
-                    cy[i] = s;
-                    return true;
-                }
-            } else if (t > 0 && t < minz) {
-                minz = t;
-            }
-        }
-    }
-    return false;
-}
-
-int km() {
-    mm(cy, 0), mm(wy, 0);
-    rep(i, 1, n + 1) {
-        while (true) {
-            minz = MAX;
-            mm(visx, 0), mm(visy, 0);
-            if (dfs(i))break;
-            rep(j, 1, n + 1) {
-                if (visx[j]) wx[j] -= minz;
-                if (visy[j]) wy[j] += minz;
-            }
-        }
-    }
-    int ans = 0;
-    rep(i, 1, n + 1) ans += arr[cy[i]][i];
-    return ans;
-}
+const double PI = acos(-1.0);
 
 int main() {
 #ifdef ONLINE_JUDGE
@@ -59,30 +19,15 @@ int main() {
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
-    int a[N][5], b[N][5];
-    cin >> n;
-
-    rep(i, 0, n) {
-        rep(j, 0, 4) cin >> a[i][j];
+    int t;
+    cin >> t;
+    while (t--) {
+        LL a, b;
+        cin >> a >> b;
+        double ans = (PI * a + 2 * b);
+        LL tmp = static_cast<LL>(ans * 1e6);
+        ans = 1.0 * tmp / 1e6;
+        printf("%.6lf\n", ans);
     }
-    rep(i, 0, n) {
-        rep(j, 0, 4) cin >> b[i][j];
-    }
-    mm(wx, 0);
-    rep(i, 0, n) {
-        rep(j, 0, n) {
-            int cnt = 0;
-            rep(k, 0, 4) {
-                rep(p, 0, 4) {
-                    if (a[i][k] == b[j][p]) cnt++;
-                }
-            }
-            arr[i + 1][j + 1] = cnt;
-            wx[i + 1] = max(wx[i + 1], cnt);
-        }
-    }
-
-    cout << 4 * n - km() << endl;
     return 0;
 }
-
