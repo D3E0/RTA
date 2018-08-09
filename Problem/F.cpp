@@ -1,102 +1,47 @@
+//============================================================================
+//Name：杭电多校第五场 1002 Beautiful Now 交换次数 全排列枚举
+//============================================================================
 #include<bits/stdc++.h>
+
+#define IO ios_base::sync_with_stdio(0),cin.tie(0)
+#define rep(i, a, n) for (int i = a; i < n; i++)
+#define mm(arr, val) memset(arr, val, sizeof(arr))
 
 using namespace std;
 typedef long long LL;
-const int INF = 0x3f3f3f3f;
-const int MAXN = 100005;
-int w[MAXN];
-int v[MAXN];
-int par[MAXN];
-int Rank[MAXN];
-bool a[MAXN];
-
-void init(int n) {
-    for (int i = 1; i <= n; ++i) {
-        par[i] = i;
-        Rank[i] = 0;
-    }
-}
-
-int find(int x) {
-    if (par[x] == x || a[x]) {
-        return x;
-    } else {
-        return par[x] = find(par[x]);
-    }
-}
-
-void unite(int x, int y) {
-    x = find(x);
-    y = find(y);
-    if (x == y)return;
-    if (Rank[x] < Rank[y]) {
-        par[x] = y;
-    } else {
-        par[y] = x;
-        if (Rank[x] == Rank[y])Rank[x]++;
-    }
-}
-
-bool same(int x, int y) {
-    return find(x) == find(y);
-}
+const int N = 105;
+int arr[N][N];
 
 int main() {
 #ifdef ONLINE_JUDGE
 #else
-    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
-//    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
+    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "r", stdin);
+//    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\std-out)", "w", stdout);
 #endif
-    ios_base::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    int t;
-    cin >> t;
-    while (t--) {
-        memset(a, 0, sizeof(a));
-        memset(w, 0, sizeof(w));
-        memset(v, 0, sizeof(v));
-        char s[15];
-        int n;
-        cin >> n;
-        init(n);
-        for (int i = 1; i < n + 1; i++) {
-            int pos;
-            cin >> pos >> s;
-            if (s[0] == 'w') {
-                w[i] = pos;
-            } else {
-                v[i] = pos;
-            }
+    int n, m, x, y;
+    while (cin >> n >> m) {
+        mm(arr, 0);
+        rep(i, 1, m + 1) {
+            cin >> x >> y;
+            arr[x][y] = 1;
         }
-        cout << "wolf  ";
-        for (int i = 1; i < n + 1; i++) {
-            if (w[i] != 0) {
-                int temp = w[i];
-                set<int> si;
-                int size = 0;
-                si.insert(w[i]);
-                while (v[temp] != 0 && size != si.size()) {
-                    size = int(si.size());
-                    temp = v[temp];
-                    si.insert(temp);
-                }
-                if (temp == i) {
-                    a[w[i]] = true;
-                    cout << w[i] << " ";
+
+        int cnt = 0;
+        rep(i, 1, n + 1) {
+            rep(j, i + 1, n + 1) {
+                rep(q, j + 1, n + 1) {
+                    rep(p, q + 1, n + 1) {
+                        if (arr[i][j] && arr[i][q] && arr[i][p]) {
+                            if (arr[j][p] && arr[j][q] && arr[q][p]) {
+                                cnt++;
+//                                printf("%d--%d--%d--%d\n", i, j, q, p);
+                            }
+                        }
+                    }
                 }
             }
         }
-        cout << endl;
-        for (int i = 1; i < n + 1; i++) {
-            if (v[i]) {
-                par[i] = find(v[i]);
-            }
-        }
-        int sum = 0;
-        for (int i = 1; i <= n; ++i) {
-            sum += a[find(i)];
-        }
-        cout << "0 " << sum << endl;
+        printf("%d\n", cnt);
     }
     return 0;
 }
