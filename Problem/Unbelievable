@@ -18,6 +18,12 @@
 // memset(a, 0, sizeof(a))
 #define mm(arr, val) memset(arr, val, sizeof(arr))
 
+// stl
+#define pb push_back
+#define fi first
+#define se second
+#define mp make_pair
+
 // 输入输出优化，针对文件
 namespace io {
 	const int L=(1<<21)+1;

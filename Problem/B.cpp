@@ -15,12 +15,12 @@ using namespace std;
 //cap 容量  flow 当前流量
 int cap[N][N], flow[N][N];
 // res[i] 残量
-int pre[N], res[N];
+int tmp[N], res[N];
 
 int Edmonds_Karp(int start, int end) {
     int maxflow = 0;
     memset(flow, 0, sizeof(flow));
-    memset(pre, 0, sizeof(pre));
+    memset(tmp, 0, sizeof(tmp));
     queue<int> q;
     while (true) {
         memset(res, 0, sizeof(res));
@@ -35,18 +35,18 @@ int Edmonds_Karp(int start, int end) {
                     //start-v路径上的最小残量 d
                     res[v] = min(res[u], cap[u][v] - flow[u][v]);
                     //记录 v 的父亲，并加入队列中
-                    pre[v] = u;
+                    tmp[v] = u;
                     q.push(v);
                 }
         }
         //无法继续更新最大流量，则当前流已经是最大流
         if (res[end] == 0) return maxflow;
         //从汇点往回走，对应边流量 加上 res[end]
-        for (int u = end; u != start; u = pre[u]) {
+        for (int u = end; u != start; u = tmp[u]) {
             //更新正向流
-            flow[pre[u]][u] += res[end];
+            flow[tmp[u]][u] += res[end];
             //更新反向流
-            flow[u][pre[u]] -= res[end];
+            flow[u][tmp[u]] -= res[end];
         }
         //更新从s流出的总流量
         maxflow += res[end];

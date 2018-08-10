@@ -1,5 +1,5 @@
 //============================================================================
-//Name：牛客多校第七场 C Bit Compression 暴力 卡常
+//Name：牛客多校第七场 A Minimum Cost Perfect Matching 构造
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -11,7 +11,16 @@
 using namespace std;
 typedef long long LL;
 
-const int N = 1e6;
+const int N = 20;
+int tmp[N];
+vector<int> res;
+
+void func(int x) {
+    if (!x) return;
+    int y = *lower_bound(tmp, tmp + N, x), offset = y - x;
+    for (int i = x - 1; i >= offset; i--) res.pb(x - i + offset);
+    func(offset);
+}
 
 int main() {
 #ifdef ONLINE_JUDGE
@@ -19,11 +28,17 @@ int main() {
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
-    int n;
-    char str[N];
-    cin >> n >> str;
-    printf("%d %d", false, 0 ^ 1);
-
-
+    tmp[0] = 1;
+    rep(i, 1, N) tmp[i] = 2 * tmp[i - 1];
+    int t = 1;
+//    cin >> t;
+    while (t--) {
+        int n;
+        res.clear();
+        cin >> n;
+        func(n);
+        for (int i = res.size() - 1; i >= 0; i--) printf("%d ", res[i] - 1);
+        printf("\n", 1);
+    }
     return 0;
 }

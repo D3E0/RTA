@@ -1,83 +1,83 @@
-//============================================================================
-//Name：牛客多校第七场 E Counting 4-Cliques 构造
-//============================================================================
-#include<bits/stdc++.h>
-
-#define IO ios_base::sync_with_stdio(0),cin.tie(0)
-#define rep(i, a, n) for (int i = a; i < n; i++)
-#define mm(arr, val) memset(arr, val, sizeof(arr))
-#define pb push_back
-#define fi first
-#define se second
-#define mp make_pair
+#include <bits/stdc++.h>
 
 using namespace std;
-typedef long long LL;
-typedef pair<int, int> pii;
+#define rep(i, a, n) for (int i=a;i<n;i++)
+#define per(i, a, n) for (int i=n-1;i>=a;i--)
+#define pb push_back
+#define mp make_pair
+#define all(x) (x).begin(),(x).end()
+#define fi first
+#define se second
+#define SZ(x) ((int)(x).size())
+typedef vector<int> VI;
+typedef long long ll;
+typedef pair<int, int> PII;
+const ll mod = 1000000007;
 
-const int N = 80;
-//comb = C(n, 4)  tmp = C(x, 3)
-int comb[N], n, k, tmp[N];
-vector<int> v;
-vector<pii> edges;
-
-void func() {
-    rep(i, 2, n + 1) {
-        rep(j, 2, n + 1) {
-            rep(q, 2, n + 1) {
-                rep(p, 2, n + 1) {
-                    rep(w, 2, n + 1) {
-//                      C(a, 3)+C(b, 3)+C(c, 3)+C(d, 3)+C(e, 3) == k
-                        int cnt = tmp[i] + tmp[j] + tmp[q] + tmp[p] + tmp[w];
-                        if (cnt == k) {
-//                          printf("%d %d %d %d %d\n", i, j, q, p, w);
-                            v.pb(i), v.pb(j), v.pb(q), v.pb(p), v.pb(w);
-                            return;
-                        }
-                    }
-                }
-            }
-        }
+ll powmod(ll a, ll b) {
+    ll res = 1;
+    a %= mod;
+    assert(b >= 0);
+    for (; b; b >>= 1) {
+        if (b & 1)res = res * a % mod;
+        a = a * a % mod;
     }
+    return res;
 }
 
+ll gcd(ll a, ll b) { return b ? gcd(b, a % b) : a; }
+// head
+
+const int N = 2010;
+int n, m, nxt[N], gor[N][N], god[N][N], mg[N];
+ll ans;
+char s[N][N];
+
 int main() {
-#ifdef ONLINE_JUDGE
-#else
-    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
-    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
-#endif
-    mm(comb, 0), mm(tmp, 0);
-    rep(i, 3, N) {
-        comb[i] = i * (i - 1) * (i - 2) * (i - 3) / 24;
-        tmp[i] = i * (i - 1) * (i - 2) / 6;
+    scanf("%d%d", &n, &m);
+    rep(i, 1, n + 1) {
+        scanf("%s", s[i] + 1);
     }
-    int t = 1;
-    while (t--) {
-        scanf("%d", &k);
-        rep(i, 4, N) {
-            if (k >= comb[i]) n = i;
-            else break;
+//    go right
+    rep(i, 1, n + 1) {
+        rep(j, 0, 127) nxt[j] = m + 1;
+        gor[i][m + 1] = m + 1;
+        per(j, 1, m + 1) {
+            gor[i][j] = gor[i][j + 1];
+            gor[i][j] = min(gor[i][j], nxt[s[i][j]]);
+            nxt[s[i][j]] = j;
         }
-//      n 个顶点的完全图  构造 C(n, 4) 个团，5 个顶点构造剩余的团
-        n = min(n, 70);
-        k -= comb[n];
-
-//      枚举 5 个顶点分别与 n 中几个点相连
-        func();
-
-        rep(i, 1, n + 1) {
-            rep(j, i + 1, n + 1) edges.pb(mp(i, j));
+    }
+//go down
+    rep(j, 1, m + 1) {
+        rep(i, 0, 127) nxt[i] = n + 1;
+        god[n + 1][j] = n + 1;
+        per(i, 1, n + 1) {
+            god[i][j] = god[i + 1][j];
+            god[i][j] = min(god[i][j], nxt[s[i][j]]);
+            nxt[s[i][j]] = i;
         }
-        rep(i, 0, 5) {
-            rep(j, 0, v[i]) {
-                edges.pb(mp(n + 1 + i, j + 1));
+    }
+
+    rep(i, 1, n + 1) {
+        rep(j, 1, m + 1) {
+            printf("(%c  %d  %d)  ", s[i][j], gor[i][j], god[i][j]);
+        }
+        printf("\n", 1);
+    }
+
+    rep(i, 1, n + 1) rep(j, 1, m + 1) {
+            int g = god[i][j];
+            rep(c, j, gor[i][j]) {
+                g = min(g, god[i][c]);
+                mg[c] = g;
+            }
+            g = gor[i][j] - 1;
+            rep(c, i, god[i][j]) {
+                g = min(g, gor[c][j] - 1);
+                while (mg[g] <= c) --g;
+                ans += g - j + 1;
             }
         }
-        printf("%d %d\n", n + 5, edges.size());
-        rep(i, 0, edges.size()) {
-            printf("%d %d\n", edges[i].fi, edges[i].se);
-        }
-    }
-    return 0;
+    printf("%lld\n", ans);
 }
