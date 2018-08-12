@@ -1,83 +1,46 @@
-#include <bits/stdc++.h>
+//============================================================================
+//Name：牛客多校第八场 G Counting regions 多边形不重叠区域个数 结论题
+//============================================================================
+#include<stdio.h>
 
-using namespace std;
-#define rep(i, a, n) for (int i=a;i<n;i++)
-#define per(i, a, n) for (int i=n-1;i>=a;i--)
-#define pb push_back
-#define mp make_pair
-#define all(x) (x).begin(),(x).end()
-#define fi first
-#define se second
-#define SZ(x) ((int)(x).size())
-typedef vector<int> VI;
-typedef long long ll;
-typedef pair<int, int> PII;
-const ll mod = 1000000007;
+#define LL long long
+#define mod 998244353
+LL  f[1000005] = {1, 1};
 
-ll powmod(ll a, ll b) {
-    ll res = 1;
-    a %= mod;
-    assert(b >= 0);
-    for (; b; b >>= 1) {
-        if (b & 1)res = res * a % mod;
-        a = a * a % mod;
+//快速幂取法 a^b%p
+LL pow_mod(LL a, LL b) {
+    LL ans = 1;
+    while (b) {
+        if (b & 1)
+            ans = (ans * a) % mod;
+        a = (a * a) % mod;
+        b >>= 1;
     }
-    return res;
+    return ans;
 }
 
-ll gcd(ll a, ll b) { return b ? gcd(b, a % b) : a; }
-// head
-
-const int N = 2010;
-int n, m, nxt[N], gor[N][N], god[N][N], mg[N];
-ll ans;
-char s[N][N];
+//费马小定理求a关于p的逆元 inv(a)
+LL Fermat(LL a) {
+    return pow_mod(a, mod - 2);
+}
 
 int main() {
-    scanf("%d%d", &n, &m);
-    rep(i, 1, n + 1) {
-        scanf("%s", s[i] + 1);
-    }
-//    go right
-    rep(i, 1, n + 1) {
-        rep(j, 0, 127) nxt[j] = m + 1;
-        gor[i][m + 1] = m + 1;
-        per(j, 1, m + 1) {
-            gor[i][j] = gor[i][j + 1];
-            gor[i][j] = min(gor[i][j], nxt[s[i][j]]);
-            nxt[s[i][j]] = j;
-        }
-    }
-//go down
-    rep(j, 1, m + 1) {
-        rep(i, 0, 127) nxt[i] = n + 1;
-        god[n + 1][j] = n + 1;
-        per(i, 1, n + 1) {
-            god[i][j] = god[i + 1][j];
-            god[i][j] = min(god[i][j], nxt[s[i][j]]);
-            nxt[s[i][j]] = i;
-        }
+#ifdef ONLINE_JUDGE
+#else
+    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
+    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
+#endif
+    int n, i;
+    scanf("%d", &n);
+    if (n == 1) {
+        printf("1\n");
+        return 0;
     }
 
-    rep(i, 1, n + 1) {
-        rep(j, 1, m + 1) {
-            printf("(%c  %d  %d)  ", s[i][j], gor[i][j], god[i][j]);
-        }
-        printf("\n", 1);
+//  (n-2)*a(n-2) - 3*(2*n-1)*a(n-1) + (n+1)*a(n) = 0.
+    for (i = 2; i <= n; i++) {
+        f[i] = ((6 * i - 3) * f[i - 1] % mod - (i - 2) * f[i - 2] % mod + mod) % mod * Fermat(i + 1) % mod;
     }
 
-    rep(i, 1, n + 1) rep(j, 1, m + 1) {
-            int g = god[i][j];
-            rep(c, j, gor[i][j]) {
-                g = min(g, god[i][c]);
-                mg[c] = g;
-            }
-            g = gor[i][j] - 1;
-            rep(c, i, god[i][j]) {
-                g = min(g, gor[c][j] - 1);
-                while (mg[g] <= c) --g;
-                ans += g - j + 1;
-            }
-        }
-    printf("%lld\n", ans);
+    printf("%lld\n", f[n - 1] * 2 % mod);
 }
