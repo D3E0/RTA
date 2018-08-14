@@ -64,7 +64,8 @@ int main() {
         }
 
         for (int i = 3; i <= n;) {
-//          分块 [i...j]
+//          整除分块：按 p/i 进行分块，范围 [i...j]
+//          j = p/(p/i), j 是满足 p / x = p / i 最大的 x
             int j = p < i ? n : min(n, p / (p / i));
             Mat W = A;
             W.t[0][2] = p / i;

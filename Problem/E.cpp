@@ -1,27 +1,55 @@
 //============================================================================
-//Name：牛客多校第八场 G Counting regions 多边形不重叠区域个数 结论题
+//Name：牛客多校第七场 C Bit Compression 暴力深搜 剪枝
 //============================================================================
-#include<stdio.h>
+#include<bits/stdc++.h>
 
-#define LL long long
-#define mod 998244353
-LL  f[1000005] = {1, 1};
+#define IO ios_base::sync_with_stdio(0),cin.tie(0)
+#define rep(i, a, n) for (int i = a; i < n; i++)
+#define mm(arr, val) memset(arr, val, sizeof(arr))
 
-//快速幂取法 a^b%p
-LL pow_mod(LL a, LL b) {
+using namespace std;
+typedef long long LL;
+
+const int N = 20;
+
+const int MAX = 1e3;
+bool notprime[MAX];
+int prime[MAX];
+int phi[MAX];
+
+void get_Eular() {
+    int cnt = 0;
+    for (int i = 2; i < MAX; i++) {
+        if (!notprime[i]) {
+            prime[cnt++] = i;
+            phi[i] = i - 1;
+        }
+        for (int j = 0; j < cnt && i * prime[j] < MAX; j++) {
+            notprime[i * prime[j]] = true;
+            if (i % prime[j] == 0) {
+                phi[i * prime[j]] = phi[i] * prime[j];
+                break;
+            }
+            phi[i * prime[j]] = phi[i] * (prime[j] - 1);
+        }
+    }
+}
+
+//快速幂取法a的b次方求余p
+LL pow_mod(LL a, LL b, LL p) {
     LL ans = 1;
     while (b) {
         if (b & 1)
-            ans = (ans * a) % mod;
-        a = (a * a) % mod;
+            ans = (ans * a) % p;
+        a = (a * a) % p;
         b >>= 1;
     }
     return ans;
 }
 
-//费马小定理求a关于p的逆元 inv(a)
-LL Fermat(LL a) {
-    return pow_mod(a, mod - 2);
+//费马小定理求a关于p的逆元
+LL Fermat(LL a, LL p) {
+    return pow_mod(a, p - 2, p);
 }
 
 int main() {
@@ -30,17 +58,24 @@ int main() {
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
-    int n, i;
-    scanf("%d", &n);
-    if (n == 1) {
-        printf("1\n");
-        return 0;
+
+    int t;
+    cin >> t;
+    phi[1] = 1;
+    get_Eular();
+    while (t--) {
+        int m, n, p, ans = 0;
+        cin >> m >> n >> p;
+        rep(i, 1, m + 1) {
+            rep(j, 1, n + 1) {
+                LL gg = phi[i * j] * Fermat((phi[i] * phi[j]), p) % p;
+                printf("i = %d j = %d  %d / (%d * %d) = %lld\n", i, j, phi[i * j], phi[i], phi[j], gg);
+                ans += gg;
+            }
+            printf("\n", 1);
+        }
+        cout << ans % p << endl;
     }
 
-//  (n-2)*a(n-2) - 3*(2*n-1)*a(n-1) + (n+1)*a(n) = 0.
-    for (i = 2; i <= n; i++) {
-        f[i] = ((6 * i - 3) * f[i - 1] % mod - (i - 2) * f[i - 2] % mod + mod) % mod * Fermat(i + 1) % mod;
-    }
-
-    printf("%lld\n", f[n - 1] * 2 % mod);
+    return 0;
 }
