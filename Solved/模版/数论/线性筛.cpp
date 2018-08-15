@@ -9,24 +9,22 @@ using namespace std;
 
 const int N = 101;
 int prime[N];
-bool notprime[N];
+bool vis[N];
 
 void getPrime() {
 	int cnt = 0;
-	memset(notprime, 0, sizeof(notprime));
+	memset(vis, 0, sizeof(vis));
 	for (int i = 2; i < N; i++) {
-		if (!notprime[i]) {
+		if (!vis[i]) {
 			prime[cnt++] = i;
 		}
-		//cout << "for i = " << i << "筛掉:" << ' ';
 		for (int j = 0; j < cnt && i * prime[j] < N; j++) {
-			notprime[i * prime[j]] = true;
+			vis[i * prime[j]] = true;
 			cout << i * prime[j] << "  ";
 			if (i % prime[j] == 0) {
 				break;
 			}
 		}
-		//cout << endl;
 	}
 }
 

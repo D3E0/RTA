@@ -10,19 +10,19 @@
 using namespace std;
 
 const int MAX = 1000;
-bool notprime[MAX];
+bool vis[MAX];
 int prime[MAX];
 int phi[MAX];
 
 void get_Eular() {
 	int cnt = 0;
 	for (int i = 2; i < MAX; i++) {
-		if (!notprime[i]) {
+		if (!vis[i]) {
 			prime[cnt++] = i;
 			phi[i] = i - 1;
 		}
 		for (int j = 0; j < cnt && i * prime[j] < MAX; j++) {
-			notprime[i * prime[j]] = true;
+			vis[i * prime[j]] = true;
 			if (i % prime[j] == 0) {
 				phi[i * prime[j]] = phi[i] * prime[j];
 				break;

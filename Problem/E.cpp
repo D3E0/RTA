@@ -1,5 +1,5 @@
 //============================================================================
-//Name：牛客多校第七场 C Bit Compression 暴力深搜 剪枝
+//Name：牛客多校第七场 1005 GuGuFishtion 莫比乌斯反演 数论
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -12,46 +12,6 @@ typedef long long LL;
 
 const int N = 20;
 
-const int MAX = 1e3;
-bool notprime[MAX];
-int prime[MAX];
-int phi[MAX];
-
-void get_Eular() {
-    int cnt = 0;
-    for (int i = 2; i < MAX; i++) {
-        if (!notprime[i]) {
-            prime[cnt++] = i;
-            phi[i] = i - 1;
-        }
-        for (int j = 0; j < cnt && i * prime[j] < MAX; j++) {
-            notprime[i * prime[j]] = true;
-            if (i % prime[j] == 0) {
-                phi[i * prime[j]] = phi[i] * prime[j];
-                break;
-            }
-            phi[i * prime[j]] = phi[i] * (prime[j] - 1);
-        }
-    }
-}
-
-//快速幂取法a的b次方求余p
-LL pow_mod(LL a, LL b, LL p) {
-    LL ans = 1;
-    while (b) {
-        if (b & 1)
-            ans = (ans * a) % p;
-        a = (a * a) % p;
-        b >>= 1;
-    }
-    return ans;
-}
-
-//费马小定理求a关于p的逆元
-LL Fermat(LL a, LL p) {
-    return pow_mod(a, p - 2, p);
-}
-
 int main() {
 #ifdef ONLINE_JUDGE
 #else
@@ -61,21 +21,8 @@ int main() {
 
     int t;
     cin >> t;
-    phi[1] = 1;
-    get_Eular();
     while (t--) {
-        int m, n, p, ans = 0;
-        cin >> m >> n >> p;
-        rep(i, 1, m + 1) {
-            rep(j, 1, n + 1) {
-                LL gg = phi[i * j] * Fermat((phi[i] * phi[j]), p) % p;
-                printf("i = %d j = %d  %d / (%d * %d) = %lld\n", i, j, phi[i * j], phi[i], phi[j], gg);
-                ans += gg;
-            }
-            printf("\n", 1);
-        }
-        cout << ans % p << endl;
-    }
 
+    }
     return 0;
 }
