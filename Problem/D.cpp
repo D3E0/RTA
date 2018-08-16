@@ -1,5 +1,5 @@
 //============================================================================
-//Name：杭电多校第八场 1005 GuGuFishtion 莫比乌斯反演 数论
+//Name：牛客多校第八场 1005 Magic Square 模拟
 //============================================================================
 #include<bits/stdc++.h>
 
@@ -10,7 +10,7 @@
 using namespace std;
 typedef long long LL;
 
-const int N = 20;
+const int N = 100;
 
 int main() {
 #ifdef ONLINE_JUDGE
@@ -19,10 +19,20 @@ int main() {
     freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
 #endif
 
-    int t;
-    cin >> t;
-    while (t--) {
-
+    int n;
+    cin >> n;
+    char str[5][100005], op[100005];
+    rep(i, 0, n) {
+        cin >> str[i];
     }
+    cin >> op;
+
+    int len = strlen(op);
+    stack<char> s;
+    rep(i, 0, len) {
+        if (op[i] == '-' && !s.empty()) s.pop();
+        else if (op[i] != '-')s.push(op[i]);
+    }
+
     return 0;
 }

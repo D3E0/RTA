@@ -1,28 +1,26 @@
-//============================================================================
-//Name：牛客多校第七场 1005 GuGuFishtion 莫比乌斯反演 数论
-//============================================================================
-#include<bits/stdc++.h>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
 
-#define IO ios_base::sync_with_stdio(0),cin.tie(0)
-#define rep(i, a, n) for (int i = a; i < n; i++)
-#define mm(arr, val) memset(arr, val, sizeof(arr))
-
+#define M 100100
 using namespace std;
-typedef long long LL;
-
-const int N = 20;
+int n;
+double a[M], l[M], l2[M], f[M], l3[M];
 
 int main() {
-#ifdef ONLINE_JUDGE
-#else
-    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\in)", "r", stdin);
-    freopen(R"(C:\Users\ACM-PC\CLionProjects\Competitaon\Problem\out)", "w", stdout);
-#endif
-
-    int t;
-    cin >> t;
-    while (t--) {
-
+    int i;
+    cin >> n;
+    double ans = 0;
+    for (i = 1; i <= n; i++) {
+        scanf("%lf", &a[i]);
+        l[i] = (l[i - 1] + 1) * a[i];
+        l2[i] = (l2[i - 1] + 2 * l[i - 1] + 1) * a[i];
+        l3[i] = (l3[i - 1] + 3 * l2[i - 1] + 3 * l[i - 1] + 1) * a[i];
+        f[i] = f[i - 1] + (3 * l2[i - 1] + 3 * l[i - 1] + 1) * a[i];
+        ans += l3[i] - l3[i - 1] * a[i];
+        printf("for i = %d f1 = %lf f2 = %lf f3 = %lf\n", i, l[i], l2[i], l3[i]);
     }
+    printf("%.1lf %.1lf\n", f[n], ans);
     return 0;
 }
